@@ -44,14 +44,20 @@
             </thead>
 
             <tbody>
-                <tr v-if="loader.getIssues">
+                <tr v-if="loader.getIssues || loader.getIssue">
                     <td colspan="2" class="text-center"><img src="/static/loading.svg" alt="loading"></td>
                 </tr>
 
-                <tr  v-for="issue in issues" :key="issue.number">
-                    <td><a href="" @click.prevent.stop="getIssue(issue.number)">{{ issue.number }}</a></td>
-                    <td>{{ issue.title }}</td>
-                </tr>
+                <template v-if="!loader.getIssue">
+                    <tr  v-for="issue in issues" :key="issue.number">
+                        <td>
+                            <a href="" @click.prevent.stop="getIssue(issue.number)">{{ issue.number }}</a>
+                            <img v-if="issue.is_loading" src="/static/loading.svg" alt="loading">
+                        </td>
+                        
+                        <td>{{ issue.title }}</td>
+                    </tr>
+                </template>
 
                 <tr v-if="!!!issues.length && !loader.getIssues">
                     <td class="text-center" colspan="2">Nenhuma issue encontrada!</td>
@@ -104,13 +110,13 @@
 
             getIssue(issueId){
                 if(this.username && this.repository){
-                    this.loader.getIssue = true;
+                    //this.loader.getIssue = true;
                     const URL = `https://api.github.com/repos/${this.username}/${this.repository}/issues/${issueId}`;
                     axios.get(URL)
                         .then((response) => {
                             this.selectedIssue = response.data;
                         }).finally(() => {
-                        this.loader.getIssue = false;
+                            //this.loader.getIssue = false;
                     });
                 }
             },
