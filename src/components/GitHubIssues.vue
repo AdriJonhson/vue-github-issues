@@ -5,26 +5,23 @@
             Página que lista issues de um repositório do Github, usando Vue.js.
         </p>
 
-        <!--<div class="alert alert-danger">-->
-
-        <!--</div>-->
-
         <div class="row">
             <div class="col">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="github username">
+                    <input v-model="username" type="text" class="form-control" placeholder="github username">
                 </div>
             </div>
 
             <div class="col">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="github repositório">
+                    <input v-model="repository" type="text" class="form-control" placeholder="github repositório">
                 </div>
             </div>
 
             <div class="col-3">
                 <div class="form-group">
                     <button class="btn btn-success">GO</button>
+                    &nbsp;
                     <button class="btn btn-danger">LIMPAR</button>
                 </div>
             </div>
@@ -49,14 +46,13 @@
 
             </tr>
 
-            <!--<tr>-->
-                <!--<td class="text-center" colspan="2">Nenhuma issue encontrada!</td>-->
-            <!--</tr>-->
+            <tr>
+                <td class="text-center" colspan="2">Nenhuma issue encontrada!</td>
+            </tr>
             </tbody>
         </table>
     </div>
 </template>
-
 
 <script>
     export default {
@@ -64,7 +60,8 @@
 
         data(){
             return{
-
+                username: '',
+                repository: '',
             }
         }
     }
