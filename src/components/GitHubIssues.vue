@@ -29,18 +29,12 @@
 
         <br><hr><br>
 
-        <template v-if="selectedIssue.id">
-            <h2>{{ selectedIssue.title }}</h2>
-            <div>{{selectedIssue.body}}</div>
-            <a href="" @click.prevent.stop="clearIssue()" class="btn btn-primary">Voltar</a>
-        </template>
-
-        <table class="table table-sm table-bordered" v-if="!selectedIssue.id">
+        <table class="table table-sm table-bordered">
             <thead>
-            <tr>
-                <th width="100">Número</th>
-                <th>Título</th>
-            </tr>
+                <tr>
+                    <th width="100">Número</th>
+                    <th>Título</th>
+                </tr>
             </thead>
 
             <tbody>
@@ -51,8 +45,14 @@
                 <template v-if="!loader.getIssue">
                     <tr v-for="issue in issues" :key="issue.number">
                         <td>
-                            <a href="" @click.prevent.stop="getIssue(issue.number)">{{ issue.number }}</a>
-                            <img v-if="issue.is_loading" src="/static/loading.svg" alt="loading">
+                            <router-link :to="{name: 'GitHubIssue',
+                                                params: {
+                                                    name: username,
+                                                    repo: repository,
+                                                    issue:issue.number
+                                                }}">
+                                {{ issue.number }}
+                            </router-link>
                         </td>
 
                         <td>{{ issue.title }}</td>
@@ -78,7 +78,6 @@
                 username: '',
                 repository: '',
                 issues: [],
-                selectedIssue: {},
 
                 loader: {
                     getIssues: false,
@@ -108,22 +107,6 @@
                 }
             },
 
-            getIssue(issueId){
-                if(this.username && this.repository){
-                    //this.loader.getIssue = true;
-                    const URL = `https://api.github.com/repos/${this.username}/${this.repository}/issues/${issueId}`;
-                    axios.get(URL)
-                        .then((response) => {
-                            this.selectedIssue = response.data;
-                        }).finally(() => {
-                            //this.loader.getIssue = false;
-                    });
-                }
-            },
-
-            clearIssue(){
-                this.selectedIssue = {};
-            },
         }
     }
 </script>

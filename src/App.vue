@@ -12,20 +12,13 @@
         <span class="navbar-toggler-icon"></span>
       </button>
     </nav>
-    <GitHubIssues></GitHubIssues>
+
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import GitHubIssues from './components/GitHubIssues.vue'
-
-export default {
-  name: 'app',
-  components: {
-      GitHubIssues
-  }
-}
+    export default {
+        name: 'App',
+    };
 </script>
-
-<style>
-</style>
