@@ -49,12 +49,12 @@
                 </tr>
 
                 <template v-if="!loader.getIssue">
-                    <tr  v-for="issue in issues" :key="issue.number">
+                    <tr v-for="issue in issues" :key="issue.number">
                         <td>
                             <a href="" @click.prevent.stop="getIssue(issue.number)">{{ issue.number }}</a>
                             <img v-if="issue.is_loading" src="/static/loading.svg" alt="loading">
                         </td>
-                        
+
                         <td>{{ issue.title }}</td>
                     </tr>
                 </template>
