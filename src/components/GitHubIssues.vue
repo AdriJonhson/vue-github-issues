@@ -38,7 +38,7 @@
             </thead>
 
             <tbody>
-                <tr v-if="loader.getIssues || loader.getIssue">
+                <tr v-if="showIssues">
                     <td colspan="2" class="text-center"><img src="/static/loading.svg" alt="loading"></td>
                 </tr>
 
@@ -59,7 +59,7 @@
                     </tr>
                 </template>
 
-                <tr v-if="!!!issues.length && !loader.getIssues">
+                <tr v-if="noIssues">
                     <td class="text-center" colspan="2">Nenhuma issue encontrada!</td>
                 </tr>
             </tbody>
@@ -87,6 +87,16 @@
                     getIssues: false,
                     getIssue: false,
                 },
+            }
+        },
+
+        computed: {
+            showIssues(){
+                return this.loader.getIssues || this.loader.getIssue;
+            },
+
+            noIssues(){
+                return !this.issues.length && !this.loader.getIssues
             }
         },
 
