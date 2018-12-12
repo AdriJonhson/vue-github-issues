@@ -74,7 +74,7 @@
         name: 'GitHubIssues',
 
         created(){
-            this.getInitData();
+            this.getLocalData();
         },
 
         data(){
@@ -112,7 +112,7 @@
                 }
             },
 
-            getInitData(){
+            getLocalData(){
                 const localData = JSON.parse(localStorage.getItem('gitHubIssues'));
 
                 if(localData.username && localData.repository){
