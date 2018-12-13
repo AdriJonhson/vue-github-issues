@@ -5,6 +5,10 @@
             Página que lista issues de um repositório do Github, usando Vue.js.
         </p>
 
+        <div v-if="response.status === 'error'" class="alert alert-danger">
+            {{ response.message }}
+        </div>
+
         <div class="row">
             <div class="col">
                 <div class="form-group">
@@ -31,37 +35,37 @@
 
         <table class="table table-sm table-bordered">
             <thead>
-                <tr>
-                    <th width="100">Número</th>
-                    <th>Título</th>
-                </tr>
+            <tr>
+                <th width="100">Número</th>
+                <th>Título</th>
+            </tr>
             </thead>
 
             <tbody>
-                <tr v-if="showIssues">
-                    <td colspan="2" class="text-center"><img src="/static/loading.svg" alt="loading"></td>
-                </tr>
+            <tr v-if="showIssues">
+                <td colspan="2" class="text-center"><img src="/static/loading.svg" alt="loading"></td>
+            </tr>
 
-                <template v-if="!loader.getIssue">
-                    <tr v-for="issue in issues" :key="issue.number">
-                        <td>
-                            <router-link :to="{name: 'GitHubIssue',
+            <template v-if="!loader.getIssue">
+                <tr v-for="issue in issues" :key="issue.number">
+                    <td>
+                        <router-link :to="{name: 'GitHubIssue',
                                                 params: {
                                                     name: username,
                                                     repo: repository,
                                                     issue:issue.number
                                                 }}">
-                                {{ issue.number }}
-                            </router-link>
-                        </td>
+                            {{ issue.number }}
+                        </router-link>
+                    </td>
 
-                        <td>{{ issue.title }}</td>
-                    </tr>
-                </template>
-
-                <tr v-if="noIssues">
-                    <td class="text-center" colspan="2">Nenhuma issue encontrada!</td>
+                    <td>{{ issue.title }}</td>
                 </tr>
+            </template>
+
+            <tr v-if="noIssues">
+                <td class="text-center" colspan="2">Nenhuma issue encontrada!</td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -74,7 +78,7 @@
         name: 'GitHubIssues',
 
         created(){
-            this.getLocalData();
+
         },
 
         data(){
@@ -82,6 +86,10 @@
                 username: '',
                 repository: '',
                 issues: [],
+                response: {
+                    status: '',
+                    message: ''
+                },
 
                 loader: {
                     getIssues: false,
@@ -105,9 +113,14 @@
                 this.username = '';
                 this.repository = '';
                 this.issues = [];
+                this.resetResponse();
+                localStorage.removeItem("gitHubIssues");
             },
 
             getIssues(){
+                this.resetResponse();
+                this.issues = [];
+
                 if(this.username && this.repository){
                     localStorage.setItem('gitHubIssues', JSON.stringify({username: this.username, repository: this.repository}));
                     this.loader.getIssues = true;
@@ -116,20 +129,31 @@
                     axios.get(URL)
                         .then((response) => {
                             this.issues = response.data;
-                        }).finally(() => {
-                            this.loader.getIssues = false;
-                        });
+
+                        }).catch((error) => {
+                            /* eslint-disable */
+                            console.log(error);
+                            this.response.status    = 'error';
+                            this.response.message   = 'Repósitorio não existe!';
+                        })
+                        .finally(() => {
+                        this.loader.getIssues = false;
+                    });
                 }
             },
 
             getLocalData(){
                 const localData = JSON.parse(localStorage.getItem('gitHubIssues'));
-
-                if(localData.username && localData.repository){
+                if(localData && localData.username && localData.repository){
                     this.username   = localData.username;
                     this.repository = localData.repository;
                     this.getIssues();
                 }
+            },
+
+            resetResponse(){
+                this.response.status = '';
+                this.response.error  = '';
             }
 
         }
